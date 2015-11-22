@@ -3,9 +3,12 @@ package mozilla.thunderbird;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import mork.Alias;
 import mork.ExceptionHandler;
 import mork.MorkDocument;
 import mork.Row;
@@ -23,6 +26,8 @@ public class AddressBook {
 	private final List<Address> addresses = new LinkedList<Address>();
 	private ExceptionHandler exceptionHandler;
 
+	private MorkDocument morkDocument;
+	
 	/**
 	 * Loads a Mork database from the given input and parses it as being a
 	 * Mozilla Thunderbird Address Book. The file is usually called abook.mab
@@ -38,7 +43,7 @@ public class AddressBook {
 		if (inputStream == null) {
 			throw new IllegalArgumentException("InputStream must not be null");
 		}
-		final MorkDocument morkDocument = new MorkDocument(
+		morkDocument = new MorkDocument(
 				new InputStreamReader(inputStream), exceptionHandler);
 		for (Row row : morkDocument.getRows()) {
 			final Address address = new Address(row.getAliases());
@@ -66,6 +71,25 @@ public class AddressBook {
 
 	public void setExceptionHandler(ExceptionHandler exceptionHandler) {
 		this.exceptionHandler = exceptionHandler;
+	}
+
+	public MorkDocument getMorkDocument() {
+		return morkDocument;
+	}
+
+	/**
+	 * Creates a new address in this address book.  The address is created
+	 * empty, i.e. no properties are set.
+	 * 
+	 * @return an address with no properties set
+	 */
+	public Address createNewAddress() {
+//Row row = new Row();
+		
+		Map<String, Alias> aliasMap = new HashMap<String, Alias>();
+		Address address = new Address(aliasMap);
+		addresses.add(address);
+		return address;
 	}
 
 }

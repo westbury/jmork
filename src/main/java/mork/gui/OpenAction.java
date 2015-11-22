@@ -21,6 +21,16 @@ public class OpenAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		JFileChooser chooser = createFileChooserDialog();
+		int returnVal = chooser.showOpenDialog(null);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			System.out.println("You chose to open this file: "
+					+ chooser.getSelectedFile().getName());
+			controller.openFile(chooser.getSelectedFile());
+		}
+	}
+
+	public static JFileChooser createFileChooserDialog() {
 		ProfileLocator locator = new ProfileLocator();
 		String result = locator.locateFirstThunderbirdAddressbookPath();
 
@@ -47,12 +57,7 @@ public class OpenAction extends AbstractAction {
 		};
 		chooser.setFileFilter(filter);
 		chooser.setFileHidingEnabled(false);
-		int returnVal = chooser.showOpenDialog(null);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			System.out.println("You chose to open this file: "
-					+ chooser.getSelectedFile().getName());
-			controller.openFile(chooser.getSelectedFile());
-		}
+		return chooser;
 	}
 
 }

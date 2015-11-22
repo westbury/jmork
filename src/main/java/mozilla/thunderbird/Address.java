@@ -1,6 +1,7 @@
 package mozilla.thunderbird;
 
 import java.util.Map;
+import java.util.Set;
 
 import mork.Alias;
 
@@ -109,5 +110,17 @@ public class Address {
 
 	public String getCompany() {
 		return get("Company");
+	}
+
+	public Set<String> getIds() {
+		return aliases.keySet();
+	}
+
+	public void put(String id, String value) {
+		String refId = null;   // TODO
+		String valueref = null;
+		Alias alias = new Alias(refId, id, value, valueref);
+		aliases.put(id, alias);
+		
 	}
 }

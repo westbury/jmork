@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -33,9 +34,31 @@ public class Controller {
 	}
 
 	public void openFile(File morkFile) {
+		final List<Throwable> modelExceptions = new ArrayList<Throwable>();
+		try {
+			AddressBook book = openBook(morkFile, modelExceptions);
+			List<Address> addresses = new ArrayList<Address>(book.getAddresses());
+			Collections.sort(addresses, new AddressComparator());
+			openInternalFrame("Addresses of " + morkFile.getName(), addresses);
+			openInternalFrame("Errors while parsing " + morkFile.getName(),
+					modelExceptions);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			String msg = "Unable to open " + morkFile.getAbsolutePath();
+			JOptionPane.showMessageDialog(parent, msg, "Error",
+					JOptionPane.ERROR_MESSAGE);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			String msg = e.getMessage();
+			JOptionPane.showMessageDialog(parent, msg, "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private AddressBook openBook(File morkFile,
+			final List<Throwable> modelExceptions) throws FileNotFoundException {
 		System.out.println("Reading " + morkFile.getAbsolutePath());
 
-		final List<Throwable> modelExceptions = new ArrayList<Throwable>();
 		AddressBook book = new AddressBook();
 		book.setExceptionHandler(new ExceptionHandler() {
 			public void handle(Throwable t) {
@@ -43,37 +66,34 @@ public class Controller {
 				// Does not rethrow, so parsing continues
 			}
 		});
+		book.load(new FileInputStream(morkFile));
+		return book;
+	}
+
+	public void openFilesForMerge() {
+		final List<Throwable> modelExceptions = new ArrayList<Throwable>();
 		try {
-			book.load(new FileInputStream(morkFile));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			String msg = "Unable to open " + morkFile.getAbsolutePath();
-			JOptionPane.showMessageDialog(parent, msg, "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return;
+			JComponent frame = new MergeFrame("Merge Address Books", modelExceptions);
+			frame.setLocation(x = x + 30, y = y + 30);
+			parent.add(frame);
+
+//			openInternalFrame("Errors while parsing " + morkFile1.getName() + " and " + morkFile2.getName(),
+//					modelExceptions);
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 			String msg = e.getMessage();
 			JOptionPane.showMessageDialog(parent, msg, "Error",
 					JOptionPane.ERROR_MESSAGE);
-			return;
 		}
-
-		List<Address> addresses = new ArrayList<Address>(book.getAddresses());
-		Collections.sort(addresses, new AddressComparator());
-		openInternalFrame("Addresses of " + morkFile.getName(), addresses);
-		openInternalFrame("Errors while parsing " + morkFile.getName(),
-				modelExceptions);
-
 	}
 
 	private void openInternalFrame(String title, Collection<?> model) {
-		final JList list = new JList(model.toArray());
+		final JList<Address> list = new JList<Address>(model.toArray(new Address[0]));
 		list.setCellRenderer(new DefaultListCellRenderer() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Component getListCellRendererComponent(JList list,
+			public Component getListCellRendererComponent(JList<?> list,
 					Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
 				super.getListCellRendererComponent(list, value, index,
