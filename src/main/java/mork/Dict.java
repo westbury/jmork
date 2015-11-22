@@ -23,10 +23,10 @@ public class Dict {
     public static final List<Dict> EMPTY_LIST = new ArrayList<Dict>(0);
 
     /** The name of the scope, e.g. 'a' or 'atomScope' */
-    private String scopeName;
+    String scopeName;
 
     /** The value of the scope, usually 'c' */
-    private String scopeValue;
+    String scopeValue;
 
     /**
      * Internal reference to aliases which were included in the Dictionary

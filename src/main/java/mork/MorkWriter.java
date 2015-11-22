@@ -5,8 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-
 import java.io.FileWriter;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -221,11 +221,11 @@ public class MorkWriter {
 	protected void writeContent() throws IOException {
 		List<Dict> dicts = currentDocument.getDicts();
 		List<Table> tables = currentDocument.getTables();
-		for (int i = 0; i < Math.max(dicts.size(), tables.size()); i++) {
-			if (i < dicts.size())
-				writeDict(dicts.get(i));
-			if (i < tables.size())
-				writeTable(tables.get(i));
+		for (Dict dict : dicts) {
+			writeDict(dict);
+		}
+		for (Table table : tables) {
+			writeTable(table);
 		}
 	}
 
@@ -322,6 +322,9 @@ public class MorkWriter {
 		writeIndent();
 		writer.append('<');
 		indent();
+		if (dict.scopeName != null) {
+			writer.append(MessageFormat.format("<({0}={1})>", dict.scopeName, dict.scopeValue));
+		}
 		Aliases aliases = dict.getAliases();
 		Set<String> keys = aliases.getKeySet();
 		for (String key : keys) {
