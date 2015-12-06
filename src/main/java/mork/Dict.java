@@ -1,7 +1,5 @@
 package mork;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,9 +16,6 @@ import java.util.regex.Pattern;
  * @author mhaller
  */
 public class Dict {
-
-    /** A typed empty list of dictionaries */
-    public static final List<Dict> EMPTY_LIST = new ArrayList<Dict>(0);
 
     /** The name of the scope, e.g. 'a' or 'atomScope' */
     String scopeName;
@@ -50,7 +45,7 @@ public class Dict {
      *            a valid dictionary definition
      */
     public Dict(String dictString) {
-        this(dictString, Dict.EMPTY_LIST);
+        this(dictString, Dicts.EMPTY_LIST);
     }
 
     /**
@@ -62,7 +57,7 @@ public class Dict {
      * @param dicts
      *            a preexisting list of dictionaries
      */
-    public Dict(String dictString, List<Dict> dicts) {
+    public Dict(String dictString, Dicts dicts) {
         // dictString = StringUtils.removeCommentLines(dictString);
         // dictString = StringUtils.removeNewlines(dictString);
 
@@ -141,6 +136,23 @@ public class Dict {
     }
 
     /**
+     * TODO document
+     * Returns the value of a parsed alias, if the Dictionary declared it.
+     * 
+     * @param id
+     *            the Alias Key to dereference
+     * @return the value of the alias with the key id
+     */
+    public String getId(String value) {
+    	for (String id : aliases.getAliases().keySet()) {
+    		if (aliases.getValue(id).equals(value)) {
+    			return id;
+    		}
+    	}
+        return null;
+    }
+    
+    /**
      * Returns the number of aliases available in this Dictionary
      * 
      * @return the count number of aliases available
@@ -165,6 +177,21 @@ public class Dict {
     }
 
     /**
+     * TODO document
+     * Dereferences a pointer to a value using this dictionary.
+     * 
+     * @param id
+     *            the id with the "^"-Prefix
+     */
+    public String doreference(String value) {
+        if (value == null) {
+            throw new RuntimeException("doreference() must be called with a non-null value");
+        }
+        String oid = getId(value);
+        return oid == null ? null : "^" + oid;
+    }
+
+    /**
      * Dereferences a pointer to a value using the given list of dictionaries to
      * resolve it in the given scope.
      * 
@@ -178,7 +205,7 @@ public class Dict {
      * @throws RuntimeException
      *             if the dictionaries are empty or the value could not be found
      */
-    public static String dereference(String id, List<Dict> dicts, 
+    public static String dereference(String id, Dicts dicts, 
                                      ScopeTypes scope) {
         if (dicts.isEmpty()) {
             return ExceptionManager.createString(id,new RuntimeException("Cannot dereference IDs without dictionaries"));
@@ -197,5 +224,40 @@ public class Dict {
                 id + " in scope " + scope));
     }
 
+    public static String doreference(String value, Dicts dicts, 
+    		ScopeTypes scope) {
+    	if (dicts.isEmpty()) {
+    		return ExceptionManager.createString(value,new RuntimeException("Cannot dereference IDs without dictionaries"));
+    	}
+    	String reference = null;
+    	for (Dict dict: dicts) {
+    		if (dict.getDefaultScope() == scope) {
+    			reference = dict.doreference(value);
+    			if (reference != null) {
+    				return reference;
+    			} else {
+    			}
+    		}
+    	}
+    	
+    	String refid = dicts.getNextReference(scope);
+    	
+    	// Add to first dictionary with correct scope
+    	for (Dict dict: dicts) {
+    		if (dict.getDefaultScope() == scope) {
+    			Alias alias = new Alias(refid, refid, value, null);
+				dict.put(refid, alias);
+    			return "^" + refid;
+    		}
+    	}
+    	return ExceptionManager.createString(value,new RuntimeException("Dictionary could not dereference key: " + 
+    			value + " in scope " + scope));
+    }
+
+    // New...
+    private void put(String refid, Alias value) {
+		aliases.put(refid, value);
+		
+	}
 
 }

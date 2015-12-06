@@ -1,7 +1,5 @@
 package mork;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,9 +24,9 @@ public class TableTest extends TestCase {
 	}
 
 	public void testTableWithReferencedScope() throws Exception {
-		List<Dict> dicts = new LinkedList<Dict>();
-		dicts.add(new Dict("<<(atomScope=c)>(80=cards)(81=name)>"));
-		dicts.add(new Dict("<>"));
+		Dicts dicts = new Dicts();
+		dicts.addDictionary(new Dict("<<(atomScope=c)>(80=cards)(81=name)>"));
+		dicts.addDictionary(new Dict("<>"));
 		String content = "{ 1:^80 [1 (^81=Foo)] }";
 		Table table = new Table(content, dicts);
 		assertEquals("1", table.getTableId());
@@ -68,8 +66,8 @@ public class TableTest extends TestCase {
 	}
 
 	public void testGroupRemoval() throws Exception {
-		List<Dict> dicts = new LinkedList<Dict>();
-		dicts.add(new Dict("<<(atomScope=c)>(80=cards)(81=name)>"));
+		Dicts dicts = new Dicts();
+		dicts.addDictionary(new Dict("<<(atomScope=c)>(80=cards)(81=name)>"));
 		Table table = new Table("{1:^80 {(k^BE:c)(s=9)} -  [-5F8]}",dicts);
 		assertEquals("1",table.getTableId());
 		assertEquals("cards",table.getScopeName());

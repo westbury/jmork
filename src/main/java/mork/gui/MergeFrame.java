@@ -298,7 +298,7 @@ public class MergeFrame extends JInternalFrame {
 	
 	private void copyAddressIntoAddressBook(Address sourceAddress,
 			AddressBook addressBook) {
-		Address destinationAddress = addressBook.createNewAddress();
+		Address destinationAddress = addressBook.createAddress();
 
 		for (String id : sourceAddress.getIds()) {
 			String value = sourceAddress.get(id);
@@ -308,7 +308,7 @@ public class MergeFrame extends JInternalFrame {
 
 	private void mergeAddressesIntoAddressBook(AddressBook mergedAddressBook, Address addressBase,
 			Address address1, Address address2) {
-		Address mergedAddress = mergedAddressBook.createNewAddress();
+		Address mergedAddress = mergedAddressBook.createAddress();
 
 		// TODO
 

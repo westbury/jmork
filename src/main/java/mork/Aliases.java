@@ -5,7 +5,6 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,6 +30,9 @@ public class Aliases {
 	/** Internal storage for keys and values */
 	private Map<String, Alias> dict = new HashMap<String, Alias>();
 
+	/** The scoped dictionaries */
+	private Dicts dicts;
+	
 	/**
 	 * Parse the definition of Aliases without using a dictionary.
 	 * 
@@ -38,7 +40,7 @@ public class Aliases {
 	 *          the aliases definition
 	 */
 	public Aliases(String aliases) {
-		this(aliases, Dict.EMPTY_LIST);
+		this(aliases, Dicts.EMPTY_LIST);
 	}
 
 	/**
@@ -50,7 +52,9 @@ public class Aliases {
 	 * @param dicts
 	 *          a list of dictionaries used to resolve keys and literal values
 	 */
-	public Aliases(String aliases, List<Dict> dicts) {
+	public Aliases(String aliases, Dicts dicts) {
+		this.dicts = dicts;
+		
 		final StringReader reader = new StringReader(aliases);
 		final StringBuffer alias = new StringBuffer();
 		boolean inParentheses = false;
@@ -103,7 +107,7 @@ public class Aliases {
 	 * @param aliasStr
 	 *          the alias including parentheses, e.g. <code>(^80=bar)</code>
 	 */
-	private void parseSingleAlias(final List<Dict> dicts, final String aliasStr) {
+	private void parseSingleAlias(final Dicts dicts, final String aliasStr) {
 		if (aliasStr.length() < 3) {
 			throw new RuntimeException("Alias must be at least 3 characters: "
 					+ aliasStr);
@@ -196,5 +200,28 @@ public class Aliases {
 	 */
 	public Alias getAlias(String id) {
 		return dict.get(id.trim());
+	}
+
+	public void put(String id, Alias alias) {
+		dict.put(id, alias);
+		
+	}
+
+	/**
+	 * 
+	 * @param id must not be null
+	 * @param value may be null
+	 * @return
+	 */
+	public void createAlias(String id, String value) {
+		if (value != null) {
+			String refId = Dict.doreference(id, dicts, ScopeTypes.COLUMN_SCOPE);
+			String valueref = Dict.doreference(value, dicts, ScopeTypes.ATOM_SCOPE);;
+			Alias alias = new Alias(refId, id, value, valueref);
+			dict.put(id, alias);
+		} else {
+			// Should we garbage collect ids from the dictionaries?
+			dict.remove(id);
+		}
 	}
 }

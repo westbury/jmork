@@ -220,9 +220,13 @@ public class MorkWriter {
 	 */
 	protected void writeContent() throws IOException {
 		List<Dict> dicts = currentDocument.getDicts();
+		List<Row> rows = currentDocument.getRows();
 		List<Table> tables = currentDocument.getTables();
 		for (Dict dict : dicts) {
 			writeDict(dict);
+		}
+		for (Row row : rows) {
+			writeRow(row);
 		}
 		for (Table table : tables) {
 			writeTable(table);

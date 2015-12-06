@@ -1,8 +1,6 @@
 package mork;
 
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -15,9 +13,9 @@ public class BugJMORK3Test extends TestCase {
 	}
 	
 	public void testTable() throws Exception {
-		List<Dict> dicts = new LinkedList<Dict>();
-		dicts.add(new Dict("<<(atomScope=c)>(80=cards)(81=name)(83=foo)(BA=baz)>"));
-		dicts.add(new Dict("<>(FD9=bar)(1116=bat)>"));
+		Dicts dicts = new Dicts();
+		dicts.addDictionary(new Dict("<<(atomScope=c)>(80=cards)(81=name)(83=foo)(BA=baz)>"));
+		dicts.addDictionary(new Dict("<>(FD9=bar)(1116=bat)>"));
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("{2:^80 {(k^C4:c)(s=9)} -\n");

@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import mork.Alias;
+import mork.Row;
 
 /**
  * Represents a single address in a Mozilla Thunderbird address book.
@@ -77,10 +78,13 @@ import mork.Alias;
  */
 public class Address {
 
+	final Row row;
+	
 	private final Map<String, Alias> aliases;
 
-	public Address(Map<String, Alias> map) {
-		this.aliases = map;
+	public Address(Row row) {
+		this.row = row;
+		this.aliases = row.getAliases();
 	}
 	
 	public String get(String id) {
@@ -97,7 +101,7 @@ public class Address {
 	}
 
 	public String getPrimaryEmail() {
-		return get("PrimaryEmail");
+		return get("LowercasePrimaryEmail");
 	}
 
 	public String getLastName() {
@@ -117,10 +121,10 @@ public class Address {
 	}
 
 	public void put(String id, String value) {
-		String refId = null;   // TODO
-		String valueref = null;
-		Alias alias = new Alias(refId, id, value, valueref);
-		aliases.put(id, alias);
-		
+		row.createAlias(id, value);
+	}
+
+	public void setLastName(String value) {
+		put("LastName", value);
 	}
 }

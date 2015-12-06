@@ -46,13 +46,13 @@ public class AddressBook {
 		morkDocument = new MorkDocument(
 				new InputStreamReader(inputStream), exceptionHandler);
 		for (Row row : morkDocument.getRows()) {
-			final Address address = new Address(row.getAliases());
+			final Address address = new Address(row);
 			addresses.add(address);
 		}
 		for (Table table : morkDocument.getTables()) {
 			for (Row row : table.getRows()) {
 				if (row.getValue("DisplayName") != null) {
-					final Address address = new Address(row.getAliases());
+					final Address address = new Address(row);
 					addresses.add(address);
 				}
 			}
@@ -83,13 +83,20 @@ public class AddressBook {
 	 * 
 	 * @return an address with no properties set
 	 */
-	public Address createNewAddress() {
-//Row row = new Row();
-		
-		Map<String, Alias> aliasMap = new HashMap<String, Alias>();
-		Address address = new Address(aliasMap);
+	public Address createAddress() {
+		Row row = morkDocument.createRow();
+		Address address = new Address(row);
 		addresses.add(address);
 		return address;
+	}
+
+	public void deleteAddress(Address address) {
+		boolean found = addresses.remove(address);
+		if (!found) {
+			throw new IllegalArgumentException("Address not in address book: " + address);
+		}
+		
+		morkDocument.deleteRow(address.row);
 	}
 
 }

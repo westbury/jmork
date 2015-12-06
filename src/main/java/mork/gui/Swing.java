@@ -31,10 +31,15 @@ public class Swing extends JFrame {
 
 	private JMenuBar createMenu() {
 		JMenuBar bar = new JMenuBar();
+		
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('F');
+
 		fileMenu.add(new OpenAction(controller));
+		fileMenu.add(new MergeAction(controller));
+
 		bar.add(fileMenu);
+		
 		return bar;
 	}
 

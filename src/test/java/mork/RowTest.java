@@ -48,8 +48,8 @@ public class RowTest extends TestCase {
 		Dict atomDict = new Dict(atomDictString);
 
 		String content = "[1:^80(^81^90)(^82^91)(^83^92)(^84^93)(^85^94)(^86^95)(^87^96)]";
-		Row row = new Row(content, Arrays.asList(new Dict[] { columnDict,
-				atomDict }));
+		Row row = new Row(content, new Dicts(Arrays.asList(new Dict[] { columnDict,
+				atomDict })));
 
 		assertEquals("1", row.getRowId());
 		assertEquals("cards", row.getScopeName()); // 80

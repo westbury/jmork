@@ -30,7 +30,7 @@ public class Table {
 	 * @param content
 	 */
 	public Table(String content) {
-		this(content, Dict.EMPTY_LIST);
+		this(content, Dicts.EMPTY_LIST);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class Table {
 	 * @param dicts
 	 *            a list of Dictionaries to resolve literal values.
 	 */
-	public Table(String content, List<Dict> dicts) {
+	public Table(String content, Dicts dicts) {
 		// "{ 1:cards [ 1 (name=Jack) ] [ 2 (name=John)] }"
 		// content = StringUtils.removeCommentLines(content.trim());
 		// content = StringUtils.removeNewlines(content);

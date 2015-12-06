@@ -2,8 +2,10 @@ package mork;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A Mork Document represents a Mork database and provides structured access to
@@ -15,7 +17,7 @@ import java.util.List;
 public class MorkDocument implements EventListener {
 
     /** Internal container for Dictionaries */
-    private List<Dict> dicts = new LinkedList<Dict>();
+    private Dicts dicts = new Dicts(new LinkedList<Dict>());
 
     /** Internal container for Rows */
     private List<Row> rows = new LinkedList<Row>();
@@ -42,6 +44,15 @@ public class MorkDocument implements EventListener {
         parser.parse(reader);
 	}
 
+    /**
+     * Copy constructor, creates a copy of a document.
+     * 
+     * @param source
+     */
+//    public MorkDocument(MorkDocument source) {
+//    	dicts
+//    }
+    
 	/**
      * Internal
      */
@@ -50,7 +61,7 @@ public class MorkDocument implements EventListener {
         case END_DICT:
             {
                 Dict dict = new Dict("<" + event.value + ">", dicts);
-                dicts.add(dict);
+                dicts.addDictionary(dict);
                 break;
             }
         case ROW:
@@ -94,7 +105,7 @@ public class MorkDocument implements EventListener {
      * @return a list of all dictionaries
      */
     public List<Dict> getDicts() {
-        return dicts;
+        return dicts.getDictionaries();
     }
 
     /**
@@ -115,4 +126,32 @@ public class MorkDocument implements EventListener {
     public List<Table> getTables() {
         return tables;
     }
+
+	public Row createRow() {
+
+//		Map<String, Alias> aliasMap = new HashMap<String, Alias>();
+
+		Set<String> rowIds = new HashSet<String>();
+		for (Row row : rows) {
+			String id = row.getRowId();
+			rowIds.add(id);
+		}
+
+		int proposedRowNumber = 0;
+		do {
+			proposedRowNumber++;
+		} while (rowIds.contains(Integer.toString(proposedRowNumber)));
+		
+		
+		String proposedRowId = "[" + Integer.toString(proposedRowNumber) + "]";
+			
+		Row row = new Row(proposedRowId, dicts);
+		rows.add(row);
+		return row;
+	}
+
+	public void deleteRow(Row row) {
+		rows.remove(row);
+		
+	}
 }

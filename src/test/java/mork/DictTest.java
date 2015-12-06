@@ -1,7 +1,5 @@
 package mork;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -192,7 +190,7 @@ public class DictTest extends TestCase {
 
 	public void testDereferenceEmptyDictException() throws Exception {
 		try {
-			Dict.dereference(null, Dict.EMPTY_LIST, null);
+			Dict.dereference(null, Dicts.EMPTY_LIST, null);
 			fail("Exception expected");
 		} catch (Exception expected) {
 			assertEquals("Cannot dereference IDs without dictionaries",
@@ -201,8 +199,8 @@ public class DictTest extends TestCase {
 	}
 
 	public void testDereferenceNoScopeDictsException() throws Exception {
-		List<Dict> dicts = new LinkedList<Dict>();
-		dicts.add(new Dict("<>"));
+		Dicts dicts = new Dicts();
+		dicts.addDictionary(new Dict("<>"));
 		try {
 			Dict.dereference("", dicts, ScopeTypes.COLUMN_SCOPE);
 			fail("Exception expected");
@@ -213,8 +211,8 @@ public class DictTest extends TestCase {
 	}
 
 	public void testDereferenceException() throws Exception {
-		List<Dict> dicts = new LinkedList<Dict>();
-		dicts.add(new Dict("<>"));
+		Dicts dicts = new Dicts();
+		dicts.addDictionary(new Dict("<>"));
 		try {
 			Dict.dereference("", dicts, ScopeTypes.ATOM_SCOPE);
 			fail("Exception expected");

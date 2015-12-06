@@ -37,7 +37,7 @@ public class Row {
      * @param dicts
      *            a list of dictionaries
      */
-    public Row(String content, List<Dict> dicts) {
+    public Row(String content, Dicts dicts) {
         content = StringUtils.removeCommentLines(content);
         content = StringUtils.removeNewlines(content);
         Pattern pattern = 
@@ -89,7 +89,7 @@ public class Row {
      *            brackets.
      */
     public Row(String content) {
-        this(content, Dict.EMPTY_LIST);
+        this(content, Dicts.EMPTY_LIST);
     }
 
     /**
@@ -161,5 +161,16 @@ public class Row {
 
 		sb.append("]\r\n");
 		return sb.toString();
+	}
+
+	//new...not used.
+	public void put(String id, Alias alias) {
+		this.aliases.put(id, alias);
+		
+	}
+
+	// new...
+	public void createAlias(String id, String value) {
+		aliases.createAlias(id, value);
 	}
 }
