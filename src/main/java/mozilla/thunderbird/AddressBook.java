@@ -3,12 +3,9 @@ package mozilla.thunderbird;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import mork.Alias;
 import mork.ExceptionHandler;
 import mork.MorkDocument;
 import mork.Row;
@@ -29,6 +26,49 @@ public class AddressBook {
 	private MorkDocument morkDocument;
 	
 	/**
+	 * Constructs an empty address book.
+	 * <P>
+	 * The address book is mutable.  Addresses may be added to this address
+	 * book and it can be saved.
+	 * 
+	 */
+	public AddressBook() {
+		morkDocument = new MorkDocument();
+	}
+	
+	/**
+	 * Constructs an address book by reading data in Mork format from the
+	 * given input stream.
+	 * <P>
+	 * The address book is mutable.  Addresses may be added, removed, or edited
+	 * and this address book can be written back out to an output stream.
+	 * 
+	 */
+	public AddressBook(InputStream inputStream) {
+		load(inputStream);
+	}
+
+	/**
+	 * Constructs an address book by reading data in Mork format from the
+	 * given input stream.
+	 * <P>
+	 * The address book is mutable.  Addresses may be added, removed, or edited
+	 * and this address book can be written back out to an output stream.
+	 * <P>
+	 * This form of the constructor allows an exception handler to be passed.
+	 * This allows parsing to continue so all parse exceptions can be obtained.
+	 */
+	public AddressBook(InputStream inputStream, ExceptionHandler exceptionHandler) {
+		this.exceptionHandler = exceptionHandler;
+		load(inputStream);
+	}
+	
+	public AddressBook(AddressBook sourceAddressBook) {
+		// TODO deep copy addresses
+		morkDocument = new MorkDocument(sourceAddressBook.morkDocument);
+	}
+
+	/**
 	 * Loads a Mork database from the given input and parses it as being a
 	 * Mozilla Thunderbird Address Book. The file is usually called abook.mab
 	 * and is located in the Thunderbird user profile.
@@ -39,7 +79,7 @@ public class AddressBook {
 	 * @param inputStream
 	 *            the stream to load the address book from.
 	 */
-	public void load(final InputStream inputStream) {
+	private void load(final InputStream inputStream) {
 		if (inputStream == null) {
 			throw new IllegalArgumentException("InputStream must not be null");
 		}
@@ -67,10 +107,6 @@ public class AddressBook {
 	 */
 	public List<Address> getAddresses() {
 		return Collections.unmodifiableList(addresses);
-	}
-
-	public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-		this.exceptionHandler = exceptionHandler;
 	}
 
 	public MorkDocument getMorkDocument() {

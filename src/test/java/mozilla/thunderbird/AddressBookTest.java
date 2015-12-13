@@ -1,5 +1,6 @@
 package mozilla.thunderbird;
 
+import java.io.InputStream;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -8,25 +9,22 @@ public class AddressBookTest extends TestCase {
 
 	public void testNullInputStream() throws Exception {
 		try {
-			new AddressBook().load(null);
+			new AddressBook((InputStream)null);
 			fail("Exception expected");
 		} catch (Exception expected) {
 		}
 	}
 	
 	public void testRows() throws Exception {
-		AddressBook addressBook = new AddressBook();
-		addressBook.load(getClass().getResourceAsStream("/simple.mab"));
+		AddressBook addressBook = new AddressBook(getClass().getResourceAsStream("/simple.mab"));
 	}
 	
 	public void testUrlInGroup() throws Exception {
-		AddressBook addressBook = new AddressBook();
-		addressBook.load(getClass().getResourceAsStream("/abook_urlingroup.mab"));
+		AddressBook addressBook = new AddressBook(getClass().getResourceAsStream("/abook_urlingroup.mab"));
 	}
 	
     public void testAddressBookReaderUmlauts() throws Exception {
-       AddressBook addressBook = new AddressBook();
-       addressBook.load(getClass().getResourceAsStream("/abook_umlauts.mab"));
+       AddressBook addressBook = new AddressBook(getClass().getResourceAsStream("/abook_umlauts.mab"));
        
        List<Address> addresses = addressBook.getAddresses();
        assertEquals(1,addresses.size());
@@ -37,8 +35,7 @@ public class AddressBookTest extends TestCase {
    }	
 	
 	public void testAddressBookReader() throws Exception {
-		AddressBook addressBook = new AddressBook();
-		addressBook.load(getClass().getResourceAsStream("/abook_single.mab"));
+		AddressBook addressBook = new AddressBook(getClass().getResourceAsStream("/abook_single.mab"));
 		
 		List<Address> addresses = addressBook.getAddresses();
 		assertEquals(1,addresses.size());
@@ -51,8 +48,7 @@ public class AddressBookTest extends TestCase {
 	}
 	
 	public void testAddressBookNoAtomDatabaseFound() throws Exception {
-		AddressBook addressBook = new AddressBook();
-		addressBook.load(getClass().getResourceAsStream("/abook_noatomdb.mab"));
+		AddressBook addressBook = new AddressBook(getClass().getResourceAsStream("/abook_noatomdb.mab"));
 	}
 
 }

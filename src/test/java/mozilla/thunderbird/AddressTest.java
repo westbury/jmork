@@ -2,9 +2,8 @@ package mozilla.thunderbird;
 
 import java.util.Map;
 
-import mork.Alias;
-
 import junit.framework.TestCase;
+import mork.Alias;
 
 public abstract class AddressTest extends TestCase {
 	Map<String,Alias> values;

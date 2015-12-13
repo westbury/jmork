@@ -1,13 +1,8 @@
 package mork.gui;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
 
 import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
-import mork.MorkWriter;
 
 public class MergeAction extends AbstractAction {
 

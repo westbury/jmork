@@ -127,4 +127,8 @@ public class Address {
 	public void setLastName(String value) {
 		put("LastName", value);
 	}
+	
+	public String toString() {
+		return getDisplayName() + getFirstName() + getLastName();
+	}
 }

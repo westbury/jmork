@@ -133,14 +133,13 @@ public class AddressBookControl extends JComponent {
 			final List<Throwable> modelExceptions) throws FileNotFoundException {
 		System.out.println("Reading " + morkFile.getAbsolutePath());
 
-		AddressBook book = new AddressBook();
-		book.setExceptionHandler(new ExceptionHandler() {
+		AddressBook book = new AddressBook(new FileInputStream(morkFile), 
+				new ExceptionHandler() {
 			public void handle(Throwable t) {
 				modelExceptions.add(t);
 				// Does not rethrow, so parsing continues
 			}
 		});
-		book.load(new FileInputStream(morkFile));
 		return book;
 	}
 

@@ -16,6 +16,8 @@ public class ThunderBirdTestSuite extends TestSuite {
 		result.addTest(new TestSuite(AddressBookTest.class));
 		result.addTest(new TestSuite(AddressComparatorTest.class));
 		result.addTest(new TestSuite(AddressAccessTest.class));
+		result.addTest(new TestSuite(AddressBookUpdateTest.class));
+		result.addTest(new TestSuite(AddressBookMergeTest.class));
 		return result;
 	}
 

@@ -26,7 +26,20 @@ public class MorkDocument implements EventListener {
     private List<Table> tables = new LinkedList<Table>();
 
     /**
-     * Creata a new Mork Document using the given content
+     * Creates a new empty Mork Document.  Content may be added to this
+     * document through the API.
+     * 
+     */
+    public MorkDocument() {
+    	Dict columnDictionary = new Dict("< <(a=c)> >", dicts);
+    	dicts.addDictionary(columnDictionary);
+
+    	Dict atomDictionary = new Dict("< <(a=a)> >", dicts);
+    	dicts.addDictionary(atomDictionary);
+}
+
+    /**
+     * Creates a new Mork Document using the given content
      * 
      * @param reader
      *            the Mork content
@@ -53,6 +66,10 @@ public class MorkDocument implements EventListener {
 //    	dicts
 //    }
     
+	public MorkDocument(MorkDocument sourceMorkDocument) {
+		// TODO deep copy dicts, rows, and tables
+	}
+
 	/**
      * Internal
      */
